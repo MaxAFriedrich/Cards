@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://css.mfriedrich.win/main-dark.css">
     <link rel="stylesheet" href="index.css">
+    <script src="jquery-3.6.0.min.js"></script>
     <script src="main.js"></script>
 </head>
 
@@ -20,19 +21,30 @@
     </div>
     <div id="settings">
         <span class="section-heads">Settings</span>
-        <button onclick="openFile()">Open a Cards File</button>
-        <button onclick="saveFile()">Save Cards File</button>
-        <button onclick="importCSV()">Import CSV</button>
+        <div class="setting-wrapper">
+            <input type="file" id="file-input" style="display:none;" />
+            <button id="openFile">Open a Cards File</button>
+            <button onclick="saveFile()">Save Cards File</button>
+            <button onclick="importCSV()">Import CSV</button>
+        </div>
     </div>
     <div id="edit">
         <span class="section-heads">Edit</span>
-        <div class="edit-wrapper">
-            <div class="edit-row">
-                <div id="edit-question" placeholder="Question" contenteditable="true"></div>
-                <div id="edit-answer" placeholder="Answer" contenteditable="true"></div>
+        <div class="edit-wrapper" id="edit-wrapper" onfocusout="edited()">
+            <div class='edit-row'>
+                <div class='edit-question' placeholder='Question' contenteditable='true'></div>
+                <div class='edit-answer' placeholder='Answer' contenteditable='true'></div>
             </div>
         </div>
     </div>
+    <div id="file-content"></div>
+    <script>
+        $("#openFile").click(function () {
+            $("#file-input").click();
+        });
+
+        document.getElementById('file-input').addEventListener('change', readSingleFile, false);
+    </script>
 </body>
 
 </html>

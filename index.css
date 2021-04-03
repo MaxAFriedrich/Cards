@@ -35,15 +35,19 @@ body {
 }
 
 #settings button {
-    width: 29%;
-    margin: 1.5%;
     overflow: auto;
-    height: 4rem;
     vertical-align: top;
+    margin:2%;
+    width:28%;
+    height: 4rem;
 }
 
+.settings-wrapper{
+    display:flex;
+    flex-direction: row;
+}
 .section-heads {
-    color: var(--nord7);
+    color: var(--nord9);
     text-align: center;
     display: block;
     text-transform: uppercase;
@@ -57,7 +61,7 @@ body {
 
 #question {
     color: var(--nord8);
-    font-weight: 700;
+    font-weight: 400;
     padding: 5ch;
     max-width: 60ch;
     margin: auto;
@@ -75,17 +79,18 @@ body {
 }
 
 button {
-    background-color: var(--nord9);
+    background-color: var(--nord2);
+    color: var(--nord9);
 }
 
 button:hover {
-    background-color: var(--nord10);
+    background-color: var(--nord1);
 }
 
 h1 {
     padding-top: 1rem;
     text-align: center;
-    color: var(--nord3);
+    color: var(--nord10);
 }
 
 .qaWrapper {
@@ -99,20 +104,31 @@ h1 {
 }
 
 .edit-wrapper {
-    background-color: var(--nord2);
     margin: auto;
-    padding:2rem;
+    padding: 2rem;
 }
 
-.edit-row{
-    display:flex;
+.edit-row {
+    display: flex;
     flex-direction: row;
 }
 
-#edit-answer, #edit-question {
+.edit-answer, .edit-question {
     width: 46%;
-    margin:1%;
-    padding:1%;
+    margin: 1%;
+    padding: 1%;
     text-align: center;
-    background-color: var(--nord3);
+    background-color: var(--nord1);
+}
+
+.edit-answer {
+    font-weight: 300;
+}
+
+.edit-question {
+    color: var(--nord8);
+}
+
+#edit {
+    margin-bottom: 2rem;
 }
