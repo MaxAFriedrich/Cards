@@ -9,8 +9,30 @@
     <script src="main.js"></script>
 </head>
 
-<body>
-    
+<body onload="innit()">
+    <div id="learn">
+        <h1>Cards</h1>
+        <span class="section-heads">learn</span>
+        <div class="qaWrapper">
+            <div id="question">Question</div>
+            <div id="answer" placeholder="Answer" contenteditable="true"></div>
+        </div>
+    </div>
+    <div id="settings">
+        <span class="section-heads">Settings</span>
+        <button onclick="openFile()">Open a Cards File</button>
+        <button onclick="saveFile()">Save Cards File</button>
+        <button onclick="importCSV()">Import CSV</button>
+    </div>
+    <div id="edit">
+        <span class="section-heads">Edit</span>
+        <div class="edit-wrapper">
+            <div class="edit-row">
+                <div id="edit-question" placeholder="Question" contenteditable="true"></div>
+                <div id="edit-answer" placeholder="Answer" contenteditable="true"></div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

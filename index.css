@@ -1,6 +1,118 @@
-/*
-body {
-    width: 100% !important;
-    margin:5px;
+:root {
+    /*dark tones*/
+    --nord0: #2E3440;
+    --nord1: #3B4252;
+    --nord2: #434C5E;
+    --nord3: #4C566A;
+    /*light tones*/
+    --nord4: #D8DEE9;
+    --nord5: #E5E9F0;
+    --nord6: #ECEFF4;
+    /*blue tones*/
+    --nord7: #8FBCBB;
+    /*highlight*/
+    --nord8: #88C0D0;
+    /*primary*/
+    --nord9: #81A1C1;
+    /*secondary*/
+    --nord10: #5E81AC;
+    /*tertiary*/
+    /*special tones*/
+    --nord11: #BF616A;
+    /*error*/
+    --nord12: #D08770;
+    /*danger*/
+    --nord13: #EBCB8B;
+    /*warning*/
+    --nord14: #A3BE8C;
+    /*success*/
+    --nord15: #B48EAD;
+    /*uncommon function*/
 }
-*/
+
+body {
+    max-width: 100rem;
+}
+
+#settings button {
+    width: 29%;
+    margin: 1.5%;
+    overflow: auto;
+    height: 4rem;
+    vertical-align: top;
+}
+
+.section-heads {
+    color: var(--nord7);
+    text-align: center;
+    display: block;
+    text-transform: uppercase;
+    margin: 1rem;
+}
+
+#learn {
+    text-align: center;
+    position: relative;
+}
+
+#question {
+    color: var(--nord8);
+    font-weight: 700;
+    padding: 5ch;
+    max-width: 60ch;
+    margin: auto;
+}
+
+#answer {
+    font-weight: 300;
+    padding: 5ch;
+    max-width: 60ch;
+    margin: auto;
+}
+
+[contenteditable=true]:empty::before {
+    content: attr(placeholder);
+}
+
+button {
+    background-color: var(--nord9);
+}
+
+button:hover {
+    background-color: var(--nord10);
+}
+
+h1 {
+    padding-top: 1rem;
+    text-align: center;
+    color: var(--nord3);
+}
+
+.qaWrapper {
+    background-color: var(--nord1);
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+}
+
+.edit-wrapper {
+    background-color: var(--nord2);
+    margin: auto;
+    padding:2rem;
+}
+
+.edit-row{
+    display:flex;
+    flex-direction: row;
+}
+
+#edit-answer, #edit-question {
+    width: 46%;
+    margin:1%;
+    padding:1%;
+    text-align: center;
+    background-color: var(--nord3);
+}
