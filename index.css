@@ -132,3 +132,13 @@ h1 {
 #edit {
     margin-bottom: 2rem;
 }
+.edit-correct, .edit-wrong{
+    margin:1%;
+    margin-top:2%;
+}
+.edit-correct{
+    color:var(--nord14);
+}
+.edit-wrong{
+    color:var(--nord11);
+}

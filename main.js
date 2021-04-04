@@ -1,8 +1,4 @@
 /**
- * data array to store the cards
- */
-dataArray = [];
-/**
  * set the height of the learnsection to full screen
  */
 function innit() {
@@ -11,14 +7,17 @@ function innit() {
 /**
  * converts the html from the edit section to an useable array
  * @param {string} contents html to be parsed 
- * @returns {array} 2d array of the cards, size agnistic
+ * @returns {array} 2d array of the cards, with four columns per row
  */
 function editHTMLtoArray(contents) {
-    contents = contents.replace(/(\<div class\=\"edit-row\"\>)|(\<\/div\>)|(    )|\n/g, ``);
+    contents = contents.replace(/(\<div class\=\"edit-row\"\>)|(\<\/div\>)|(    )|\n|(\<\/span\>)/g, ``);
     contents = contents.split(`<div class="edit-question" placeholder="Question" contenteditable="true">`);
     contents.shift();
     for (var i = 0; contents.length > i; i++) {
-        contents[i] = contents[i].split(`<div class="edit-answer" placeholder="Answer" contenteditable="true">`);
+        contents[i] = contents[i].replace(/(\<div class\=\"edit\-answer\" placeholder\=\"Answer\" contenteditable\=\"true\"\>)|(\<span class\=\"edit-correct\"\>)|(\<span class\=\"edit-wrong\"\>)/g, `,`);
+        contents[i] = contents[i].split(",");
+        contents[i][2] = parseInt(contents[i][2]);
+        contents[i][3] = parseInt(contents[i][3]);
     }
     return contents
 }
@@ -30,7 +29,7 @@ function editHTMLtoArray(contents) {
 function editArraytoHTML(contents) {
     var output = "";
     for (var i = 0; contents.length > i; i++) {
-        output = output + `<div class="edit-row"><div class="edit-question" placeholder="Question" contenteditable="true">` + contents[i][0] + `</div><div class="edit-answer" placeholder="Answer" contenteditable="true">` + contents[i][1] + `</div></div>`;
+        output = output + `<div class="edit-row"><div class="edit-question" placeholder="Question" contenteditable="true">` + contents[i][0] + `</div><div class="edit-answer" placeholder="Answer" contenteditable="true">` + contents[i][1] + `</div><span class="edit-correct">` + contents[i][2].toString() + `</span><span class="edit-wrong">` + contents[i][3].toString() + `</span></div>`;
     }
     return output
 }
@@ -43,6 +42,15 @@ function csvtoArray(csv) {
     editArray = csv.split("\n");
     for (var i = 0; editArray.length > i; i++) {
         editArray[i] = editArray[i].split(",");
+        if (editArray[i].length == 2) {
+            editArray[i].push(0);
+            editArray[i].push(0);
+        } else if (editArray[i].length == 4) {
+            editArray[i][2] = parseInt(editArray[i][2]);
+            editArray[i][3] = parseInt(editArray[i][3]);
+        } else {
+            console.error("CSV to Array error: unexpected number of row values");
+        }
     }
     return editArray
 }
@@ -60,19 +68,18 @@ function readSingleFile(e) {
     var reader = new FileReader();
     reader.onload = function (e) {
         var contents = e.target.result;
-        editFill(contents);
+        editFile(contents);
     };
     reader.readAsText(file);
 }
 
 /**
- * execited as callback
+ * ececuted as callback
  * used to open the csv files and put into array and edit section
  * @param {string} contents 
  */
-function editFill(contents) {
-    dataArray = csvtoArray(contents);
-    document.getElementById("edit-wrapper").innerHTML = editArraytoHTML(dataArray);
+function editFile(contents) {
+    document.getElementById("edit-wrapper").innerHTML = editArraytoHTML(csvtoArray(contents));
 }
 
 
@@ -88,31 +95,31 @@ function editFill(contents) {
  *  - passes new cards to data array
  */
 function edited() {
-    //TODO check the displayed data against the dataArray
-    var contents = document.getElementById("edit-wrapper").innerHTML;
-    contents = contents.replace(/,/g, " ");
-    document.getElementById("edit-wrapper").innerHTML = contents;
-    editArray = editHTMLtoArray(contents);
-    if (editArray[editArray.length - 1][0] != "" | editArray[editArray.length - 1][1] != "") {
-        document.getElementById("edit-wrapper").innerHTML = document.getElementById("edit-wrapper").innerHTML + `<div class="edit-row"><div class="edit-question" placeholder="Question" contenteditable="true"></div><div class="edit-answer" placeholder="Answer" contenteditable="true"></div></div>`
+    var contents = document.getElementById("edit-wrapper").innerHTML;//get contents
+    var a = contents;
+    contents = contents.replace(/,/g, " ");//remove commas
+    if (a != contents) {
+        document.getElementById("edit-wrapper").innerHTML = contents;//write contents back
     }
-
-    /*<div class="edit-wrapper" id="edit-wrapper" onkeyup="edited()">
-            <div class="edit-row">
-                <div class="edit-question" placeholder="Question" contenteditable="true">question 1</div>
-                <div class="edit-answer" placeholder="Answer" contenteditable="true">answer 1</div>
-            </div>
-            <div class="edit-row">
-                <div class="edit-question" placeholder="Question" contenteditable="true">question 2</div>
-                <div class="edit-answer" placeholder="Answer" contenteditable="true">answer 2</div>
-            </div>
-            <div class="edit-row">
-                <div class="edit-question" placeholder="Question" contenteditable="true">question 3</div>
-                <div class="edit-answer" placeholder="Answer" contenteditable="true">answer 3</div>
-            </div>
-            <div class="edit-row">
-                <div class="edit-question" placeholder="Question" contenteditable="true">question 4</div>
-                <div class="edit-answer" placeholder="Answer" contenteditable="true">answer 4</div>
-            </div>
-        </div> */
+    //check if new card needed
+    var editArray = editHTMLtoArray(contents);
+    if (editArray[editArray.length - 1][0] != "" | editArray[editArray.length - 1][1] != "") {
+        document.getElementById("edit-wrapper").innerHTML = document.getElementById("edit-wrapper").innerHTML + `            <div class='edit-row'>
+        <div class='edit-question' placeholder='Question' contenteditable='true'></div>
+        <div class='edit-answer' placeholder='Answer' contenteditable='true'></div>
+        <span class="edit-correct">0</span>
+        <span class="edit-wrong">0</span>
+    </div>`;
+    }
+    //check if card needs removal
+    var editArray = editHTMLtoArray(document.getElementById("edit-wrapper").innerHTML);
+    var a = editArray;
+    for (var i = 0; editArray.length > i; i++) {
+        if (editArray[i][0].includes("--rm")) {
+            editArray.splice(i, 1);
+        }
+    }
+    if (editArray != a) {
+        document.getElementById("edit-wrapper").innerHTML = editArraytoHTML(editArray);
+    }
 }
