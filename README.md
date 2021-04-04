@@ -2,8 +2,8 @@
  learn stuff with cards
 
 ## TODO
-- [ ] saveCards Function
-- [ ] importCSV function(put in modal box or something)
+- [x] saveCards Function
+- [x] importCSV function(put in modal box or something)
 - [ ] learn functions
     - [ ] markdown interpreter
     - [ ] multi choice

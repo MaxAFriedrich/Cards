@@ -42,7 +42,10 @@ function csvtoArray(csv) {
     editArray = csv.split("\n");
     for (var i = 0; editArray.length > i; i++) {
         editArray[i] = editArray[i].split(",");
-        if (editArray[i].length == 2) {
+        if (editArray[i][0]==""){
+            editArray.splice(i, 1);
+            
+        }else if (editArray[i].length == 2) {
             editArray[i].push(0);
             editArray[i].push(0);
         } else if (editArray[i].length == 4) {
@@ -53,6 +56,46 @@ function csvtoArray(csv) {
         }
     }
     return editArray
+}
+
+/**
+ * convert array to csv
+ * @param {array} array a 2d array of all the cards
+ * @returns a string of comma sperated values
+ */
+function arraytoCSV(array){
+    var csv;
+    for (var i=0;array.length>i;i++){
+        csv=csv+array[i][0]+","+array[i][1]+","+array[i][2]+","+array[i][3]+"\n";
+    }
+    return csv
+}
+
+/**
+ * download file from app to local client
+ * @param {string} filename the name of the file to be downloaded
+ * @param {string} text the content of the file to be downloaded
+ */
+function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+}
+
+/**
+ * function executed by save button to download cards as csv
+ */
+function saveFile(){
+    var array=editHTMLtoArray(document.getElementById("edit-wrapper").innerHTML);
+    var out = arraytoCSV(array);
+    download("download.csv",out);
 }
 
 /**
