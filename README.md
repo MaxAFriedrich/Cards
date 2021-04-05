@@ -8,8 +8,8 @@
 - [ ] learn functions
     - [ ] markdown interpreter
     - [x] multi choice
-    - [ ] flash card
+    - [x] flash card
     - [x] short answer
-    - [ ] true false
+    - [x] true false
     - [ ] fill in gaps
 - [x] check the displayed data against the dataArray

@@ -294,14 +294,66 @@ function answerSubmit() {
     document.getElementById("edit-wrapper").innerHTML = editArraytoHTML(cards);
     learnInit();
 }
+function trueOrFalse(inp,ans){
+    if (ans==0){
+        ans=true;
+    }else{
+        ans=false;
+    }
+    var actualAns = document.getElementById("actualAnswer").innerText;
+    var cards = editHTMLtoArray(document.getElementById("edit-wrapper").innerHTML);
+    for (var i = 0; cards.length > i; i++) {
+        if (actualAns == cards[i][1]) {
+            var ansIndex = i;
+        }
+    }
+    if (inp == ans) {
+        cards[ansIndex][2]++;
+        $(".correct").fadeIn(100).delay(500).fadeOut(10);
+
+    } else {
+        cards[ansIndex][3]++;
+        $(".wrong").fadeIn(100).delay(500).fadeOut(10);
+    }
+    document.getElementById("edit-wrapper").innerHTML = editArraytoHTML(cards);
+    learnInit();
+}
+function flashOne(){
+    var actualAns = document.getElementById("actualAnswer").innerHTML;
+    document.getElementById("qaWrapper").innerHTML = `
+    <h4>Flash Card</h4>
+    <div id="answer">`+actualAns+`</div>
+    <button id="ansOk" style="margin:auto;margin-bottom: 1rem;" onclick="flashTwo(true)">Correct</button>
+    <button id="ansOk" style="margin:auto;margin-bottom: 1rem;" onclick="flashTwo(false)">Incorrect</button>
+    <div style="display:none;" id="actualAnswer">`+actualAns+`</div>
+    `;
+}
+function flashTwo(bool){
+    var actualAns = document.getElementById("actualAnswer").innerText;
+    var cards = editHTMLtoArray(document.getElementById("edit-wrapper").innerHTML);
+    for (var i = 0; cards.length > i; i++) {
+        if (actualAns == cards[i][1]) {
+            var ansIndex = i;
+        }
+    }
+    if (bool) {
+        cards[ansIndex][2]++;
+        $(".correct").fadeIn(100).delay(500).fadeOut(10);
+
+    } else {
+        cards[ansIndex][3]++;
+        $(".wrong").fadeIn(100).delay(500).fadeOut(10);
+    }
+    document.getElementById("edit-wrapper").innerHTML = editArraytoHTML(cards);
+    learnInit();  
+}
 /**
  * itintailse learn run
  */
 function learnInit() {
     var cards = editHTMLtoArray(document.getElementById("edit-wrapper").innerHTML);
-    console.log(cards);
     for (var i = 0; cards.length > i; i++) {
-        if (cards[i][2] === "" | cards[0][2] === "") {
+        if (cards[i][0] === "" || cards[0][1] === "") {
             cards.splice(i, 1);
         }
     }
@@ -327,29 +379,50 @@ function learnInit() {
         }
     }
     contenderCards = shuffle(contenderCards);
-    if(contenderCards.length >= 4 && cards[0][2]<=1){
-        var y = 1
+    if(contenderCards.length >= 4 && cards[0][2]>=1){
+        var y = Math.floor(Math.random() * 4);
     }else if (contenderCards.length >= 4) {
-        var y = Math.floor(Math.random() * 2);
+        var y = 3
     } else {
-        var y = Math.floor(Math.random() * 1);
+        var y = Math.floor(Math.random() * 3);
     }
     if (y == 0) {
         document.getElementById("qaWrapper").innerHTML = `
+        <h4>Short Answer</h4>
         <div id="question">`+contenderCards[0][0]+`</div>
         <div id="answer" placeholder="Answer" contenteditable="true"></div>
         <button id="ansOk"style="margin:auto;margin-bottom: 1rem;"onclick="answerSubmit()">Okay</button>
         <div style="display:none;" id="actualAnswer">`+contenderCards[0][1]+`</div>
         `;
-    } else if (y == 1) {
-        var x = Math.floor(Math.random() * 4);
+    } else if (y == 3) {
+        x = Math.floor(Math.random() * 4);
         document.getElementById("qaWrapper").innerHTML = `
+            <h4>Multiple Choice</h4>
             <div id="question">`+ contenderCards[x][0] + `</div>
             <div class="correct" id="correct"></div>
             <div class="wrong" id="wrong"></div>
             <div id="answer"><button onclick="multiChoice('` + contenderCards[0][1] + `')">` + contenderCards[0][1] + `</button>` + `<button onclick="multiChoice('` + contenderCards[1][1] + `')">` + contenderCards[1][1] + `</button>` + `<button onclick="multiChoice('` + contenderCards[2][1] + `')">` + contenderCards[2][1] + `</button>` + `<button onclick="multiChoice('` + contenderCards[3][1] + `')">` + contenderCards[3][1] + `</button></div>
             <div style="display:none;" id="actualAnswer">`+ contenderCards[x][1] + `</div>
             `;
+    }else if(y==1){
+        x = Math.floor(Math.random() * 2);
+        document.getElementById("qaWrapper").innerHTML = `
+        <h4>True or False</h4>
+        <div id="question">`+contenderCards[0][0]+` <h2> is </h2>`+contenderCards[x][1]+`</div>
+        <div id="answer">
+            <button onclick="trueOrFalse(true,`+x+`)">True</button>
+            <button onclick="trueOrFalse(false,`+x+`)">False</button>
+        </div>
+        <div style="display:none;" id="actualAnswer">`+ contenderCards[x][1] + `</div>
+        `;
+
+    }else if (y == 2) {
+        document.getElementById("qaWrapper").innerHTML = `
+        <h4>Flash Card</h4>
+        <div id="question">`+contenderCards[0][0]+`</div>
+        <button id="ansOk" style="margin:auto;margin-bottom: 1rem;" onclick="flashOne()">Flip Card</button>
+        <div style="display:none;" id="actualAnswer">`+contenderCards[0][1]+`</div>
+        `;
     }
 
 }
