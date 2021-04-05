@@ -358,6 +358,9 @@ function learnInit() {
  * print thing
  */
 function print() {
-    var html_string = "<script>window.print();</script><style>span{display:none;}.edit-row {display: flex;flex-direction: row;}.edit-answer, .edit-question {border: 1px solid black;width: 46%;margin: 1%;padding: 1%;text-align: center;.edit-wrapper {width:100%;padding: 0.5rem;}@media print {.edit-row {page-break-inside: avoid;}}</style>" + document.getElementById("edit-wrapper").innerHTML;
-    document.getElementById('printer').src = "data:text/html;charset=utf-8," + escape(html_string);
+    window.print();
+}
+
+if(navigator.userAgent.match(/Android/i)){
+    window.scrollTo(0,1);
 }
