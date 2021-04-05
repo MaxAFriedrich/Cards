@@ -42,10 +42,10 @@ function csvtoArray(csv) {
     editArray = csv.split("\n");
     for (var i = 0; editArray.length > i; i++) {
         editArray[i] = editArray[i].split(",");
-        if (editArray[i][0]==""){
+        if (editArray[i][0] == "") {
             editArray.splice(i, 1);
-            
-        }else if (editArray[i].length == 2) {
+
+        } else if (editArray[i].length == 2) {
             editArray[i].push(0);
             editArray[i].push(0);
         } else if (editArray[i].length == 4) {
@@ -63,10 +63,10 @@ function csvtoArray(csv) {
  * @param {array} array a 2d array of all the cards
  * @returns a string of comma sperated values
  */
-function arraytoCSV(array){
+function arraytoCSV(array) {
     var csv;
-    for (var i=0;array.length>i;i++){
-        csv=csv+array[i][0]+","+array[i][1]+","+array[i][2]+","+array[i][3]+"\n";
+    for (var i = 0; array.length > i; i++) {
+        csv = csv + array[i][0] + "," + array[i][1] + "," + array[i][2] + "," + array[i][3] + "\n";
     }
     return csv
 }
@@ -92,10 +92,11 @@ function download(filename, text) {
 /**
  * function executed by save button to download cards as csv
  */
-function saveFile(){
-    var array=editHTMLtoArray(document.getElementById("edit-wrapper").innerHTML);
+function saveFile() {
+    var array = editHTMLtoArray(document.getElementById("edit-wrapper").innerHTML);
     var out = arraytoCSV(array);
-    download("download.csv",out);
+    out = out.replace("undefined", "");
+    download("download.csv", out);
 }
 
 /**
@@ -117,19 +118,13 @@ function readSingleFile(e) {
 }
 
 /**
- * ececuted as callback
+ * executed as callback
  * used to open the csv files and put into array and edit section
  * @param {string} contents 
  */
 function editFile(contents) {
     document.getElementById("edit-wrapper").innerHTML = editArraytoHTML(csvtoArray(contents));
 }
-
-
-//TODO saveCards Function
-//TODO importCSV function(put in modal box or something)
-//TODO learn functions
-
 
 /**
  * a function that is called when the edit section is edited
@@ -156,13 +151,213 @@ function edited() {
     }
     //check if card needs removal
     var editArray = editHTMLtoArray(document.getElementById("edit-wrapper").innerHTML);
-    var a = editArray;
     for (var i = 0; editArray.length > i; i++) {
         if (editArray[i][0].includes("--rm")) {
             editArray.splice(i, 1);
         }
     }
-    if (editArray != a) {
-        document.getElementById("edit-wrapper").innerHTML = editArraytoHTML(editArray);
+    document.getElementById("edit-wrapper").innerHTML = editArraytoHTML(editArray);
+}
+/**
+ * assits in sorting of 2d arrays
+ * @param {*} a 
+ * @param {*} b 
+ * @returns 
+ */
+function correctsortFunction(a, b) {
+    if (a[2] === b[2]) {
+        return 2;
     }
+    else {
+        return (a[2] < b[2]) ? -1 : 1;
+    }
+}
+/**
+ * assits in sorting of 2d arrays
+ * @param {*} a 
+ * @param {*} b 
+ * @returns 
+ */
+function incorrectsortFunction(a, b) {
+    if (a[3] === b[3]) {
+        return 3;
+    }
+    else {
+        return (a[3] < b[3]) ? -1 : 1;
+    }
+}
+/**
+ * Shuffles array in place. ES6 version
+ * @param {Array} a items An array containing the items.
+ */
+function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+/**
+ * how similar are two phrases?
+ * @param {*} s1 
+ * @param {*} s2 
+ * @returns 
+ */
+function similarity(s1, s2) {
+    var longer = s1;
+    var shorter = s2;
+    if (s1.length < s2.length) {
+        longer = s2;
+        shorter = s1;
+    }
+    var longerLength = longer.length;
+    if (longerLength == 0) {
+        return 1.0;
+    }
+    return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+}
+/**
+ * part of similarity
+ * @param {*} s1 
+ * @param {*} s2 
+ * @returns 
+ */
+function editDistance(s1, s2) {
+    s1 = s1.toLowerCase();
+    s2 = s2.toLowerCase();
+
+    var costs = new Array();
+    for (var i = 0; i <= s1.length; i++) {
+        var lastValue = i;
+        for (var j = 0; j <= s2.length; j++) {
+            if (i == 0)
+                costs[j] = j;
+            else {
+                if (j > 0) {
+                    var newValue = costs[j - 1];
+                    if (s1.charAt(i - 1) != s2.charAt(j - 1))
+                        newValue = Math.min(Math.min(newValue, lastValue),
+                            costs[j]) + 1;
+                    costs[j - 1] = lastValue;
+                    lastValue = newValue;
+                }
+            }
+        }
+        if (i > 0)
+            costs[s2.length] = lastValue;
+    }
+    return costs[s2.length];
+}
+/**
+ * learn, multiple coice checker
+ * @param {string} answer the correct answer
+ */
+function multiChoice(answer) {
+    var actualAns = document.getElementById("actualAnswer").innerText;
+    var cards = editHTMLtoArray(document.getElementById("edit-wrapper").innerHTML);
+    for (var i = 0; cards.length > i; i++) {
+        if (actualAns == cards[i][1]) {
+            var ansIndex = i;
+        }
+    }
+    if (answer == actualAns) {
+        cards[ansIndex][2]++;
+        $(".correct").fadeIn(100).delay(500).fadeOut(10);
+
+    } else {
+        cards[ansIndex][3]++;
+        $(".wrong").fadeIn(100).delay(500).fadeOut(10);
+    }
+    document.getElementById("edit-wrapper").innerHTML = editArraytoHTML(cards);
+    learnInit();
+}
+/**
+ * checks writen answers
+ */
+function answerSubmit() {
+    var actualAns = document.getElementById("actualAnswer").innerText;
+    var answer = document.getElementById("answer").innerText;
+    var cards = editHTMLtoArray(document.getElementById("edit-wrapper").innerHTML);
+    for (var i = 0; cards.length > i; i++) {
+        if (actualAns == cards[i][1]) {
+            var ansIndex = i;
+        }
+    }
+    if (similarity(answer, actualAns) >= 0.8) {
+        cards[ansIndex][2]++;
+        $(".correct").fadeIn(100).delay(500).fadeOut(10);
+
+    } else {
+        cards[ansIndex][3]++;
+        $(".wrong").fadeIn(100).delay(500).fadeOut(10);
+    }
+    document.getElementById("edit-wrapper").innerHTML = editArraytoHTML(cards);
+    learnInit();
+}
+/**
+ * itintailse learn run
+ */
+function learnInit() {
+    var cards = editHTMLtoArray(document.getElementById("edit-wrapper").innerHTML);
+    console.log(cards);
+    for (var i = 0; cards.length > i; i++) {
+        if (cards[i][2] === "" | cards[0][2] === "") {
+            cards.splice(i, 1);
+        }
+    }
+    cards = cards.sort(correctsortFunction);
+    var contenderCards = [];
+    var same = true;
+    for (var i = 0; cards.length > i; i++) {
+        if (cards[i][2] != cards[0][2]) {
+            same = false;
+        }
+    }
+    var i = 0;
+    if (same) {
+        contenderCards = cards;
+    } else {
+        while (true) {
+            if (cards[i][2] == cards[0][2]) {
+                contenderCards.push(cards[i])
+            } else {
+                break
+            }
+            i++;
+        }
+    }
+    contenderCards = shuffle(contenderCards);
+    if(contenderCards.length >= 4 && cards[0][2]<=1){
+        var y = 1
+    }else if (contenderCards.length >= 4) {
+        var y = Math.floor(Math.random() * 2);
+    } else {
+        var y = Math.floor(Math.random() * 1);
+    }
+    if (y == 0) {
+        document.getElementById("qaWrapper").innerHTML = `
+        <div id="question">`+contenderCards[0][0]+`</div>
+        <div id="answer" placeholder="Answer" contenteditable="true"></div>
+        <button id="ansOk"style="margin:auto;margin-bottom: 1rem;"onclick="answerSubmit()">Okay</button>
+        <div style="display:none;" id="actualAnswer">`+contenderCards[0][1]+`</div>
+        `;
+    } else if (y == 1) {
+        var x = Math.floor(Math.random() * 4);
+        document.getElementById("qaWrapper").innerHTML = `
+            <div id="question">`+ contenderCards[x][0] + `</div>
+            <div class="correct" id="correct"></div>
+            <div class="wrong" id="wrong"></div>
+            <div id="answer"><button onclick="multiChoice('` + contenderCards[0][1] + `')">` + contenderCards[0][1] + `</button>` + `<button onclick="multiChoice('` + contenderCards[1][1] + `')">` + contenderCards[1][1] + `</button>` + `<button onclick="multiChoice('` + contenderCards[2][1] + `')">` + contenderCards[2][1] + `</button>` + `<button onclick="multiChoice('` + contenderCards[3][1] + `')">` + contenderCards[3][1] + `</button></div>
+            <div style="display:none;" id="actualAnswer">`+ contenderCards[x][1] + `</div>
+            `;
+    }
+
+}
+
+/**
+ * print thing
+ */
+function print() {
+    var html_string = "<script>window.print();</script><style>span{display:none;}.edit-row {display: flex;flex-direction: row;}.edit-answer, .edit-question {border: 1px solid black;width: 46%;margin: 1%;padding: 1%;text-align: center;.edit-wrapper {width:100%;padding: 0.5rem;}@media print {.edit-row {page-break-inside: avoid;}}</style>" + document.getElementById("edit-wrapper").innerHTML;
+    document.getElementById('printer').src = "data:text/html;charset=utf-8," + escape(html_string);
 }

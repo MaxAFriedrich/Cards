@@ -4,11 +4,12 @@
 ## TODO
 - [x] saveCards Function
 - [x] importCSV function(put in modal box or something)
+- [x] print button
 - [ ] learn functions
     - [ ] markdown interpreter
-    - [ ] multi choice
+    - [x] multi choice
     - [ ] flash card
-    - [ ] short answer
+    - [x] short answer
     - [ ] true false
     - [ ] fill in gaps
 - [x] check the displayed data against the dataArray

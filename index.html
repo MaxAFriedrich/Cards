@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html id="html">
 
 <head>
     <title>Cards</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://css.mfriedrich.win/main-dark.css">
     <link rel="stylesheet" href="index.css">
-    <script src="jquery-3.6.0.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="main.js"></script>
 </head>
 
@@ -14,17 +14,25 @@
     <div id="learn">
         <h1>Cards</h1>
         <span class="section-heads">learn</span>
-        <div class="qaWrapper">
-            <div id="question">Question</div>
+        
+        <div id="qaWrapper" class="qaWrapper">
+            <h2>Scroll Down<br><svg width="100%" height="100%" viewBox="0 0 167 167" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;"><path d="M3.539,55.556l79.794,70.785l79.794,-70.785" style="fill:none;stroke:#fff;stroke-width:4.17px;"/></svg></h2>
+<!--            <div id="question">Question</div>
             <div id="answer" placeholder="Answer" contenteditable="true"></div>
+            <button id="ansOk"style="display:none;margin:auto;margin-bottom: 1rem;"onclick="answerSubmit()">Okay</button>
+            <div style="display:none;" id="actualAnswer"></div>-->
         </div>
+        <div class="correct" id="correct"></div>
+        <div class="wrong" id="wrong"></div>
     </div>
     <div id="settings">
         <span class="section-heads">Settings</span>
         <div class="setting-wrapper">
-            <input type="file" id="file-input" style="display:none;" />
-            <button id="openFile">Open a Cards File or CSV</button>
-            <button onclick="saveFile()">Save Cards File</button>
+            <button id="openFile">Open</button>
+            <button onclick="saveFile()">Save</button>
+            <button onclick="print()">Print</button>
+            <button onclick="learnInit()">Learn</button>
+
         </div>
     </div>
     <div id="edit">
@@ -38,7 +46,8 @@
             </div>
         </div>
     </div>
-    <div id="file-content"></div>
+    <input type="file" id="file-input" style="display:none;" />
+    <iframe id="printer" style="display:none;"></iframe>
     <script>
         $("#openFile").click(function () {
             $("#file-input").click();
